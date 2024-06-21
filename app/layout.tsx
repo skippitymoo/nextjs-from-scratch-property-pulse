@@ -1,5 +1,7 @@
-import "@/assets/styles/globals.css";
 import { Metadata } from "next";
+import NavBar from "@/components/NavBar";
+
+import "@/assets/styles/globals.css";
 
 export const metadata: Metadata = {
   title: "Propert Pulse | Find The Perfect Rental",
@@ -7,15 +9,12 @@ export const metadata: Metadata = {
   keywords: "rental, properties, find rentals, find properties",
 };
 
-const MainLayout = ({
-  children,
-}: {
-  children: React.ReactNode;
-}): JSX.Element => {
+const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en">
       <body>
-        <div>{children}</div>
+        <NavBar />
+        <main>{children}</main>
       </body>
     </html>
   );

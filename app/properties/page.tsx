@@ -4,7 +4,7 @@ const PropertiesPage = () => {
   return (
     <div>
       <h1 className="text-3xl">Properties</h1>
-      <Link href="/properties">Go Home</Link>
+      <Link href="/">Go Home</Link>
     </div>
   );
 };
