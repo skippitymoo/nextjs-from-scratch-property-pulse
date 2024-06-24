@@ -6,7 +6,7 @@ interface ButtonInfo {
   backgroundColour: string;
 }
 
-interface InfoBoxTypes extends React.ComponentProps<"div"> {
+interface InfoBoxProps extends React.ComponentProps<"div"> {
   heading: string;
   backgroundColour?: string;
   textColour?: string;
@@ -19,7 +19,7 @@ const InfoBox = ({
   textColour = "text-gray-800",
   buttonInfo,
   children,
-}: InfoBoxTypes) => {
+}: InfoBoxProps) => {
   return (
     <div className={`${backgroundColour} p-6 rounded-lg shadow-md`}>
       <h2 className={`${textColour} font-bold`}>{heading}</h2>
