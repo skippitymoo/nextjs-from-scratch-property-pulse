@@ -108,7 +108,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
 
         <div className="flex justify-center gap-4 text-green-900 text-sm mb-4">
           {Object.keys(property.rates).map((key) => (
-            <p>
+            <p key={key}>
               <FaMoneyBill className="inline mr-2" />{" "}
               <span className="capitalize">{key}</span>
             </p>
