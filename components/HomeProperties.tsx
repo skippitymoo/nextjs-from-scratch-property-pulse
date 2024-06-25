@@ -1,8 +1,25 @@
 import Link from "next/link";
-import properties from "@/properties.json";
 import PropertyCard from "@/components/PropertyCard";
+import type { PropertyType } from "@/types/app-types";
 
-const HomeProperties = () => {
+const fetchProperties = async (): Promise<PropertyType[]> => {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN_API}/properties`);
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch properties data!!!");
+    }
+
+    return (await res.json()) as unknown as PropertyType[];
+  } catch (error) {
+    console.error("------ Home Properties fetch - ERROR ------", error);
+  }
+
+  return [];
+};
+
+const HomeProperties = async () => {
+  const properties = await fetchProperties();
   const recentProperties = properties
     .sort(() => Math.random() - Math.random())
     .slice(0, 3);
@@ -15,7 +32,7 @@ const HomeProperties = () => {
             Recent Properties
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {recentProperties.length === 0 ? (
+            {properties.length === 0 ? (
               <p>No properties found</p>
             ) : (
               recentProperties.map((property) => (
