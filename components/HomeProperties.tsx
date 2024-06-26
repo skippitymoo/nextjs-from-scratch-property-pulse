@@ -1,22 +1,6 @@
 import Link from "next/link";
 import PropertyCard from "@/components/PropertyCard";
-import type { PropertyType } from "@/types/app-types";
-
-const fetchProperties = async (): Promise<PropertyType[]> => {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN_API}/properties`);
-
-    if (!res.ok) {
-      throw new Error("Failed to fetch properties data!!!");
-    }
-
-    return (await res.json()) as unknown as PropertyType[];
-  } catch (error) {
-    console.error("------ Home Properties fetch - ERROR ------", error);
-  }
-
-  return [];
-};
+import { fetchProperties } from "@/utils/requests";
 
 const HomeProperties = async () => {
   const properties = await fetchProperties();
