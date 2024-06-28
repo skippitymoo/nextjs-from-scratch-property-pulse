@@ -8,27 +8,22 @@ import {
   FaMapMarker,
 } from "react-icons/fa";
 import type { PropertyType, Rates } from "@/types/app-types";
+import { formatCurrency } from "@/utils/formatter";
 
 interface PropertyCardProps {
   property: PropertyType;
 }
 
-const formatter = new Intl.NumberFormat("en-GB", {
-  style: "currency",
-  currency: "GBP",
-  maximumFractionDigits: 0,
-});
-
 const PropertyCard = ({ property }: PropertyCardProps) => {
   const getRateDisplay = (rates: Rates): string => {
     if (rates.monthly) {
-      return `${formatter.format(rates.monthly)}/mo`;
+      return `${formatCurrency(rates.monthly)}/mo`;
     }
     if (rates.weekly) {
-      return `${formatter.format(rates.weekly)}/wk`;
+      return `${formatCurrency(rates.weekly)}/wk`;
     }
     if (rates.nightly) {
-      return `${formatter.format(rates.nightly)}/night`;
+      return `${formatCurrency(rates.nightly)}/night`;
     }
 
     return "";
