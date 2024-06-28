@@ -7,6 +7,7 @@ import type { PropertyType } from "@/types/app-types";
 import PropertyHeaderImage from "@/components/PropertyHeaderImage";
 import PropertyDetails from "@/components/PropertyDetails";
 import { FaArrowLeft } from "react-icons/fa";
+import Spinner from "@/components/Spinner";
 
 const PropertyPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -37,6 +38,7 @@ const PropertyPage = () => {
   }
   return (
     <>
+      <Spinner loading={loading} />
       {!loading && property && (
         <>
           <PropertyHeaderImage image={property.images[0]} />
