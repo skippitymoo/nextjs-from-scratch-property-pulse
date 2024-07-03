@@ -180,7 +180,7 @@ const NavBar = () => {
                     type="button"
                     className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                     id="user-menu-button"
-                    aria-expanded="false"
+                    aria-expanded={isProfileMenuOpen}
                     aria-haspopup="true"
                     onClick={() => setIsProfileMenuOpen((prev) => !prev)}
                   >
@@ -205,6 +205,9 @@ const NavBar = () => {
                     aria-orientation="vertical"
                     aria-labelledby="user-menu-button"
                     tabIndex={-1}
+                    onClick={() => {
+                      setIsProfileMenuOpen(false);
+                    }}
                   >
                     <Link
                       href="/profile"
@@ -225,6 +228,9 @@ const NavBar = () => {
                       Saved Properties
                     </Link>
                     <button
+                      onClick={() => {
+                        signOut();
+                      }}
                       className="block px-4 py-2 text-sm text-gray-700"
                       role="menuitem"
                       tabIndex={-1}
