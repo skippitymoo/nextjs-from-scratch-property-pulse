@@ -23,6 +23,8 @@ type NextAuthProvidersType = Record<
 
 const NavBar = () => {
   const { data: session } = useSession();
+  const profileImage = session?.user?.image;
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [providers, setProviders] = useState<NextAuthProvidersType | null>(
@@ -76,7 +78,12 @@ const NavBar = () => {
           <div className="flex flex-1 items-center justify-center md:items-stretch md:justify-start">
             {/* <!-- Logo --> */}
             <Link className="flex flex-shrink-0 items-center" href="/">
-              <Image className="h-10 w-auto" src={logo} alt="PropertyPulse" />
+              <Image
+                className="h-10 w-auto"
+                src={logo}
+                alt="PropertyPulse"
+                priority={true}
+              />
 
               <span className="hidden md:block text-white text-2xl font-bold ml-2">
                 PropertyPulse
@@ -181,8 +188,10 @@ const NavBar = () => {
                     <span className="sr-only">Open user menu</span>
                     <Image
                       className="h-8 w-8 rounded-full"
-                      src={profileDefault}
+                      src={profileImage || profileDefault}
                       alt=""
+                      width={40}
+                      height={40}
                     />
                   </button>
                 </div>
