@@ -9,7 +9,7 @@ export interface PropertyAddType {
   amenities: string[];
   rates: Rates;
   seller_info: SellerInfo;
-  images: string[];
+  images: File[];
 }
 
 export interface PropertyType extends PropertyAddType {

@@ -63,7 +63,6 @@ const PropertyAddForm = () => {
   ): void => {
     e.preventDefault();
     const { value, checked } = e.target;
-    console.log("-----      handleAmenitiesChange - ", value, checked);
 
     const updateAmenities = (amenities: string[]): string[] => {
       let updatedAmenities = [...amenities];
@@ -88,12 +87,12 @@ const PropertyAddForm = () => {
     e.preventDefault();
     const { files } = e.target;
 
-    const updateImages = (images: string[]): string[] => {
+    const updateImages = (images: File[]): File[] => {
       let updatedImages = [...images];
-      if (!files) return updatedImages;
-
-      for (const file of files) {
-        if (!updatedImages.includes(file.name)) updatedImages.push(file.name);
+      if (files) {
+        for (const file of files) {
+          updatedImages.push(file);
+        }
       }
 
       return updatedImages;
@@ -106,7 +105,7 @@ const PropertyAddForm = () => {
   };
 
   return (
-    <form>
+    <form action="/api/properties" method="POST" encType="multipart/form-data">
       <h2 className="text-3xl text-center font-semibold mb-6">Add Property</h2>
 
       <div className="mb-4">
@@ -500,7 +499,7 @@ const PropertyAddForm = () => {
         <input
           type="text"
           id="seller_name"
-          name="seller_info.name."
+          name="seller_info.name"
           className="border rounded w-full py-2 px-3"
           placeholder="Name"
           value={fields.seller_info.name}
@@ -554,6 +553,7 @@ const PropertyAddForm = () => {
           className="border rounded w-full py-2 px-3"
           accept="image/*"
           multiple
+          required
           onChange={handleImageChange}
         />
       </div>
