@@ -38,6 +38,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
         height={0}
         sizes="100vw"
         className="w-full h-auto rounded-t-xl"
+        priority
       />
       <div className="p-4">
         <div className="text-left md:text-center lg:text-left mb-6">
@@ -59,7 +60,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
           </p>
           <p>
             <FaRulerCombined className="inline mr-2" />
-            {property.square_feet.toLocaleString()}{" "}
+            {property.square_feet?.toLocaleString()}{" "}
             <span className="md:hidden lg:inline">sqft</span>
           </p>
         </div>

@@ -1,17 +1,20 @@
-export interface PropertyType {
-  _id: string;
-  owner: string;
+export interface PropertyAddType {
   name: string;
   type: string;
   description: string;
   location: Location;
-  beds: number;
-  baths: number;
-  square_feet: number;
+  beds?: number;
+  baths?: number;
+  square_feet?: number;
   amenities: string[];
   rates: Rates;
   seller_info: SellerInfo;
   images: string[];
+}
+
+export interface PropertyType extends PropertyAddType {
+  _id: string;
+  owner: string;
   is_featured: boolean;
   createdAt: string;
   updatedAt: string;
