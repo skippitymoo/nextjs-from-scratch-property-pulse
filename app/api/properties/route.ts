@@ -1,5 +1,6 @@
 import connectDB from "@/config/database";
 import Property from "@/models/Property";
+import { getSessionUser } from "@/utils/getSessionUser";
 
 // GET /api/properties
 export const GET = async (request: Request) => {
@@ -20,6 +21,14 @@ export const GET = async (request: Request) => {
 // POST /api/properties
 export const POST = async (request: Request) => {
   try {
+    await connectDB();
+
+    const sessionUser = await getSessionUser();
+
+    if (!sessionUser?.userId) {
+      return new Response("User id is required!", { status: 401 });
+    }
+
     const formData = await request.formData();
 
     // access all values from amenities and images
@@ -53,15 +62,20 @@ export const POST = async (request: Request) => {
         email: formData.get("seller_info.email"),
         phone: formData.get("seller_info.phone"),
       },
-      images,
-      // owner: userId,
+      owner: sessionUser.userId,
+      // images,
     };
 
-    await connectDB();
+    const newProperty = new Property(propertyData);
+    await newProperty.save();
 
-    return new Response(JSON.stringify({ message: "temp*Success*temp" }), {
-      status: 200,
-    });
+    return Response.redirect(
+      `${process.env.NEXTAUTH_URL}/properties/${newProperty._id}`
+    );
+
+    // return new Response(JSON.stringify({ message: "temp*Success*temp" }), {
+    //   status: 200,
+    // });
   } catch (error) {
     console.error(error);
     return new Response("Something went wrong", { status: 500 });

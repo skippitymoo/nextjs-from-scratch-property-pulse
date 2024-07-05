@@ -1,10 +1,19 @@
-import { Schema, model, models } from "mongoose";
+import { Schema, Types, model, models } from "mongoose";
 
-const UserSchema = new Schema(
+// 1. Create an interface representing a document in MongoDB
+export interface IUser {
+  email: string;
+  username: string;
+  image?: string;
+  bookmarks?: Types.ObjectId[]; // (Types.ObjectId | Record<string, unknown>)[];
+}
+
+// 2. Create a Schema corresponding to the document interface.
+const UserSchema = new Schema<IUser>(
   {
     email: {
       type: String,
-      unique: [true, "Email already exists"],
+      // unique: [true, "Email already exists"],
       required: [true, "Email is required"],
     },
     username: {
@@ -26,6 +35,8 @@ const UserSchema = new Schema(
   }
 );
 
-const User = models.User || model("User", UserSchema);
+const getUserModel = () => model<IUser>("User", UserSchema);
+
+const User = (models.User || getUserModel()) as ReturnType<typeof getUserModel>;
 
 export default User;

@@ -1,6 +1,12 @@
-import { Schema, model, models } from "mongoose";
+import { Schema, Types, model, models } from "mongoose";
+import { PropertyType } from "@/types/app-types";
 
-const PropertySchema = new Schema(
+// 1. Create an interface representing a document in MongoDB
+interface IProperty extends Omit<PropertyType, "owner"> {
+  owner: Types.ObjectId;
+}
+
+const PropertySchema = new Schema<IProperty>(
   {
     owner: {
       type: Schema.Types.ObjectId,
@@ -86,6 +92,10 @@ const PropertySchema = new Schema(
   }
 );
 
-const Property = models.Property || model("Property", PropertySchema);
+const getPropertyModel = () => model<IProperty>("Property", PropertySchema);
+
+const Property = (models.Property || getPropertyModel()) as ReturnType<
+  typeof getPropertyModel
+>;
 
 export default Property;

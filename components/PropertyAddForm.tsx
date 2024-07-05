@@ -13,9 +13,9 @@ const PropertyAddForm = () => {
       state: "",
       zipcode: "",
     },
-    beds: undefined,
-    baths: undefined,
-    square_feet: undefined,
+    beds: 0,
+    baths: 0,
+    square_feet: 0,
     amenities: [],
     rates: {
       weekly: undefined,
@@ -35,7 +35,6 @@ const PropertyAddForm = () => {
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
     >
   ): void => {
-    e.preventDefault();
     const { name, value } = e.target;
 
     if (name.includes(".")) {
@@ -52,19 +51,24 @@ const PropertyAddForm = () => {
         };
       });
     } else {
-      setFields((prevFields) => ({
-        ...prevFields,
-        [name]: value,
-      }));
+      setFields((prevFields) => {
+        return {
+          ...prevFields,
+          [name]: value,
+        };
+      });
     }
   };
   const handleAmenitiesChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ): void => {
-    e.preventDefault();
     const { value, checked } = e.target;
 
-    const updateAmenities = (amenities: string[]): string[] => {
+    const updateAmenities = (
+      amenities: string[],
+      value: string,
+      checked: boolean
+    ): string[] => {
       let updatedAmenities = [...amenities];
       if (checked && !updatedAmenities.includes(value)) {
         updatedAmenities.push(value);
@@ -78,30 +82,38 @@ const PropertyAddForm = () => {
       return updatedAmenities;
     };
 
-    setFields((prevFields) => ({
-      ...prevFields,
-      amenities: updateAmenities(prevFields.amenities),
-    }));
+    setFields((prevFields) => {
+      const updatedAmenities = updateAmenities(
+        prevFields.amenities,
+        value,
+        checked
+      );
+      return {
+        ...prevFields,
+        amenities: updatedAmenities,
+      };
+    });
   };
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    e.preventDefault();
     const { files } = e.target;
 
-    const updateImages = (images: File[]): File[] => {
+    const updateImages = (images: string[]): string[] => {
       let updatedImages = [...images];
       if (files) {
         for (const file of files) {
-          updatedImages.push(file);
+          updatedImages.push(file.name);
         }
       }
 
       return updatedImages;
     };
 
-    setFields((prevFields) => ({
-      ...prevFields,
-      images: updateImages(prevFields.images),
-    }));
+    setFields((prevFields) => {
+      return {
+        ...prevFields,
+        images: updateImages(prevFields.images),
+      };
+    });
   };
 
   return (

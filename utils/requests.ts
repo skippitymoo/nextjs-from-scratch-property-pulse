@@ -13,7 +13,12 @@ const fetchProperties = async (): Promise<PropertyType[]> => {
       throw new Error("Failed to fetch properties data!!!");
     }
 
-    return (await res.json()) as unknown as PropertyType[];
+    const resJson = await res.json();
+    for (const item of resJson) {
+      item.id = item._id;
+    }
+
+    return resJson;
   } catch (error) {
     console.error("------ Properties fetch - ERROR ------", error);
   }
@@ -32,7 +37,10 @@ const fetchProperty = async (id: string): Promise<PropertyType | null> => {
       throw new Error("Failed to fetch property data!!!");
     }
 
-    return (await res.json()) as unknown as PropertyType;
+    const resJson = await res.json();
+    resJson.id = resJson._id;
+
+    return resJson as PropertyType;
   } catch (error) {
     console.error("------ Property fetch - ERROR ------", error);
   }
