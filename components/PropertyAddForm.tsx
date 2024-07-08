@@ -6,7 +6,7 @@ const PropertyAddForm = () => {
   const [fields, setFields] = useState<PropertyAddType>({
     type: "",
     name: "",
-    description: "yeoooo!",
+    description: "",
     location: {
       street: "",
       city: "",
@@ -138,6 +138,7 @@ const PropertyAddForm = () => {
           <option value="Cabin Or Cottage">Cabin or Cottage</option>
           <option value="Room">Room</option>
           <option value="Studio">Studio</option>
+          <option value="Chalet">Chalet</option>
           <option value="Other">Other</option>
         </select>
       </div>

@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import PropertyImages from "@/components/PropertyImages";
 import { fetchProperty } from "@/utils/requests";
 import type { PropertyType } from "@/types/app-types";
 import PropertyHeaderImage from "@/components/PropertyHeaderImage";
@@ -144,6 +145,7 @@ const PropertyPage = () => {
               </div>
             </div>
           </section>
+          <PropertyImages images={property.images} />
         </>
       )}
     </>

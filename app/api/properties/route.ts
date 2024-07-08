@@ -1,9 +1,11 @@
+import { UploadApiResponse } from "cloudinary";
 import connectDB from "@/config/database";
+import cloudinary from "@/config/cloudinary";
 import Property from "@/models/Property";
 import { getSessionUser } from "@/utils/getSessionUser";
 
 // GET /api/properties
-export const GET = async (request: Request) => {
+export const GET = async (_: Request) => {
   try {
     await connectDB();
 
@@ -35,7 +37,7 @@ export const POST = async (request: Request) => {
     const amenities = formData.getAll("amenities");
     const images = formData
       .getAll("images")
-      .filter((file) => file && (file as File).name);
+      .filter((file) => file && (file as File).name) as Blob[];
 
     // create propertyData object for database
     const propertyData = {
@@ -55,7 +57,7 @@ export const POST = async (request: Request) => {
       rates: {
         weekly: formData.get("rates.weekly"),
         monthly: formData.get("rates.monthly"),
-        nightly: formData.get("rates.nightly."),
+        nightly: formData.get("rates.nightly"),
       },
       seller_info: {
         name: formData.get("seller_info.name"),
@@ -63,8 +65,33 @@ export const POST = async (request: Request) => {
         phone: formData.get("seller_info.phone"),
       },
       owner: sessionUser.userId,
-      // images,
+      images: <string[]>[],
     };
+
+    // upload imags(s) to Cloudinary
+    const imageUploadPromises: Promise<UploadApiResponse>[] = [];
+
+    for (const image of images) {
+      const imageBuffer = await image.arrayBuffer();
+      const imageArray = Array.from(new Uint8Array(imageBuffer));
+      const imageData = Buffer.from(imageArray);
+
+      // convert image data to base64
+      const imageBase64 = imageData.toString("base64");
+
+      // make request to upload to Cloudinary
+      const uploader = cloudinary.uploader.upload(
+        `data:image/png;base64,${imageBase64}`,
+        {
+          folder: "propertypulse",
+        }
+      );
+
+      imageUploadPromises.push(uploader);
+    }
+
+    const uploadedImagesResponses = await Promise.all(imageUploadPromises);
+    propertyData.images = uploadedImagesResponses.map((res) => res.secure_url);
 
     const newProperty = new Property(propertyData);
     await newProperty.save();
