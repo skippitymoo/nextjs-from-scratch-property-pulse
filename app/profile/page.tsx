@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import { toast } from "react-toastify";
 import profileDefault from "@/assets/images/profile.png";
 import Spinner from "@/components/Spinner";
 import { PropertyType } from "@/types/app-types";
@@ -34,13 +35,13 @@ const ProfilePage = () => {
           (property) => property.id !== propertyId
         );
 
-        console.log("Property deleted !!!");
+        toast.success("Property deleted");
       } else {
-        alert("Failed to deletep property");
+        toast.error("Failed to delete property");
       }
     } catch (error) {
       console.error(error);
-      alert("Failed to deletep property");
+      toast.error("Failed to delete property");
     }
   };
 
