@@ -9,7 +9,14 @@ export const GET = async (_: Request) => {
   try {
     await connectDB();
 
-    const properties = await Property.find({});
+    const propertiesDocuments = await Property.find({});
+
+    const properties = propertiesDocuments.map((propertyDocument) => {
+      const property = propertyDocument.toObject();
+      property.id = property._id.toString();
+
+      return property;
+    });
 
     return new Response(JSON.stringify(properties), {
       status: 200,

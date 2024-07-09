@@ -14,9 +14,6 @@ const fetchProperties = async (): Promise<PropertyType[]> => {
     }
 
     const resJson = await res.json();
-    for (const item of resJson) {
-      item.id = item._id;
-    }
 
     return resJson;
   } catch (error) {
@@ -38,7 +35,6 @@ const fetchProperty = async (id: string): Promise<PropertyType | null> => {
     }
 
     const resJson = await res.json();
-    resJson.id = resJson._id;
 
     return resJson as PropertyType;
   } catch (error) {
