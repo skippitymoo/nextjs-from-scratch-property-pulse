@@ -24,6 +24,7 @@ const PropertyMap = ({ property }: PropertyMapProps) => {
     height: "500px",
   });
   const [loading, setLoading] = useState<boolean>(true);
+  const [geocodeError, setGeocodeError] = useState(false);
 
   // Set default response language and region (optional).
   // This sets default values for language and region for geocoding requests.
@@ -36,27 +37,42 @@ const PropertyMap = ({ property }: PropertyMapProps) => {
 
   useEffect(() => {
     const fetchCoords = async () => {
-      const res = await fromAddress(
-        `${property.location.street} ${property.location.city} ${property.location.state} ${property.location.zipcode}`
-      );
+      try {
+        const res = await fromAddress(
+          `${property.location.street} ${property.location.city} ${property.location.state} ${property.location.zipcode}`
+        );
 
-      const { lat, lng } = res?.results[0]?.geometry.location;
+        // check for result
+        if (!res?.results.length) {
+          // No result found
+          setGeocodeError(true);
+        }
 
-      setLat(lat);
-      setLng(lng);
-      setViewPort({
-        ...viewport,
-        latitude: lat,
-        longitude: lng,
-      });
+        const { lat, lng } = res?.results[0]?.geometry.location;
 
-      setLoading(false);
+        setLat(lat);
+        setLng(lng);
+        setViewPort({
+          ...viewport,
+          latitude: lat,
+          longitude: lng,
+        });
+      } catch (error) {
+        console.error(error);
+        setGeocodeError(true);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchCoords();
   }, []);
 
   if (loading) return <Spinner loading={loading} />;
+
+  // handle case where geocoding failed
+  if (geocodeError)
+    return <div className="text-xl">No location data found</div>;
 
   return (
     !loading && (
