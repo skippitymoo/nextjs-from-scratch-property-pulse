@@ -1,4 +1,5 @@
 import type { PropertyType, Rates } from "@/types/app-types";
+import PropertyMap from "./PropertyMap";
 import { formatCurrency } from "@/utils/formatter";
 import {
   FaBed,
@@ -91,7 +92,9 @@ const PropertyDetails = ({ property }: PropertyDetailsProps) => {
         </ul>
       </div>
       <div className="bg-white p-6 rounded-lg shadow-md mt-6">
-        <div id="map"></div>
+        <div id="map">
+          <PropertyMap property={property} />
+        </div>
       </div>
     </main>
   );
