@@ -1,8 +1,50 @@
 import connectDB from "@/config/database";
+import Property from "@/models/Property";
 import User from "@/models/User";
 import { getSessionUser } from "@/utils/getSessionUser";
 
 export const dynamic = "force-dynamic";
+
+// GET /api/bookmarks
+export const GET = async (request: Request) => {
+  try {
+    await connectDB();
+
+    const sessionUser = await getSessionUser();
+
+    if (!sessionUser?.userId) {
+      return new Response("User id is required!", { status: 401 });
+    }
+
+    // Find user in database
+    const { userId } = sessionUser;
+    const user = await User.findOne({ id: userId });
+
+    if (!user) {
+      return new Response("User is required!", { status: 401 });
+    }
+
+    const bookmarksDocuments = await Property.find({
+      _id: {
+        $in: user.bookmarks,
+      },
+    });
+
+    const properties = bookmarksDocuments.map((propertyDocument) => {
+      const property = propertyDocument.toObject();
+      property.id = property._id.toString();
+
+      return property;
+    });
+
+    return new Response(JSON.stringify(properties), {
+      status: 200,
+    });
+  } catch (error) {
+    console.error(error);
+    return new Response("Something went wrong", { status: 500 });
+  }
+};
 
 // POST /api/bookmarks
 export const POST = async (request: Request) => {
