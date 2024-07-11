@@ -1,4 +1,8 @@
+"use client";
+import { ChangeEvent, FormEvent, useState } from "react";
+import { useSession } from "next-auth/react";
 import { FaPaperPlane } from "react-icons/fa";
+import { toast } from "react-toastify";
 import { PropertyType } from "@/types/app-types";
 
 interface PropertyContactFormProps {
@@ -6,76 +10,148 @@ interface PropertyContactFormProps {
 }
 
 const PropertyContactForm = ({ property }: PropertyContactFormProps) => {
+  const { data: session } = useSession();
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [message, setMessage] = useState<string>("");
+  const [phone, setPhone] = useState<string>("");
+  const [wasSubmitted, setWasSubmitted] = useState(false);
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const data = {
+      name,
+      email,
+      phone,
+      message,
+      recipient: property.owner,
+      property: property.id,
+    };
+
+    try {
+      const res = await fetch(`/api/messages`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (res.status === 200) {
+        toast.success("Message sent successfully");
+        setWasSubmitted(true);
+      } else if ([400, 401].includes(res.status)) {
+        const resJson = await res.json();
+        toast.error(resJson.message);
+      } else {
+        toast.error("Error sending form");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Error sending form");
+    } finally {
+      setName("");
+      setEmail("");
+      setPhone("");
+      setMessage("");
+    }
+  };
+
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
       <h3 className="text-xl font-bold mb-6">Contact Property Manager</h3>
-      <form>
-        <div className="mb-4">
-          <label
-            className="block text-gray-700 text-sm font-bold mb-2"
-            htmlFor="name"
-          >
-            Name:
-          </label>
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="name"
-            type="text"
-            placeholder="Enter your name"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label
-            className="block text-gray-700 text-sm font-bold mb-2"
-            htmlFor="email"
-          >
-            Email:
-          </label>
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="email"
-            type="email"
-            placeholder="Enter your email"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label
-            className="block text-gray-700 text-sm font-bold mb-2"
-            htmlFor="phone"
-          >
-            Phone:
-          </label>
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="phone"
-            type="text"
-            placeholder="Enter your phone number"
-          />
-        </div>
-        <div className="mb-4">
-          <label
-            className="block text-gray-700 text-sm font-bold mb-2"
-            htmlFor="message"
-          >
-            Message:
-          </label>
-          <textarea
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 h-44 focus:outline-none focus:shadow-outline"
-            id="message"
-            placeholder="Enter your message"
-          ></textarea>
-        </div>
-        <div>
-          <button
-            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline flex items-center justify-center"
-            type="submit"
-          >
-            <FaPaperPlane className=" mr-2" /> Send Message
-          </button>
-        </div>
-      </form>
+      {!session ? (
+        <p>You must be logged in to send a message</p>
+      ) : wasSubmitted ? (
+        <p className="text-green-500 mb-4">
+          Your message has been sent successfully
+        </p>
+      ) : (
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="name"
+            >
+              Name:
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="name"
+              type="text"
+              placeholder="Enter your name"
+              required
+              value={name}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setName(e.target.value)
+              }
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="email"
+            >
+              Email:
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="email"
+              type="email"
+              placeholder="Enter your email"
+              required
+              value={email}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setEmail(e.target.value)
+              }
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="phone"
+            >
+              Phone:
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="phone"
+              type="text"
+              placeholder="Enter your phone number"
+              value={phone}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setPhone(e.target.value)
+              }
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="message"
+            >
+              Message:
+            </label>
+            <textarea
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 h-44 focus:outline-none focus:shadow-outline"
+              id="message"
+              placeholder="Enter your message"
+              value={message}
+              onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+                setMessage(e.target.value)
+              }
+            ></textarea>
+          </div>
+          <div>
+            <button
+              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline flex items-center justify-center"
+              type="submit"
+            >
+              <FaPaperPlane className="mr-2" /> Send Message
+            </button>
+          </div>
+        </form>
+      )}
     </div>
   );
 };

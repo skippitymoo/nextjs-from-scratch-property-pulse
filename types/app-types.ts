@@ -37,3 +37,15 @@ export interface SellerInfo {
   email?: string;
   phone?: string;
 }
+
+export interface MessageType {
+  id: string;
+  sender: string;
+  recipient: string;
+  property: string;
+  name: string;
+  email: string;
+  phone?: string;
+  body?: string;
+  read?: boolean;
+}

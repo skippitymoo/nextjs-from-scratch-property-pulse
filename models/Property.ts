@@ -2,7 +2,7 @@ import { Schema, Types, model, models } from "mongoose";
 import { PropertyType } from "@/types/app-types";
 
 // 1. Create an interface representing a document in MongoDB
-interface IProperty extends Omit<PropertyType, "owner"> {
+export interface IProperty extends Omit<PropertyType, "owner"> {
   owner: Types.ObjectId;
 }
 
