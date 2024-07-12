@@ -9,6 +9,7 @@ interface MessageProps {
 
 const Message = ({ message }: MessageProps) => {
   const [isRead, setIsRead] = useState(message.read || false);
+  const [isDeleted, setIsDeleted] = useState(false);
 
   const propertyName =
     typeof message.property === "object"
@@ -28,13 +29,32 @@ const Message = ({ message }: MessageProps) => {
         const notificationText = read ? "Marked as read" : "Marked as new";
         toast.success(notificationText);
       } else {
-        toast.error("");
+        toast.error("Error updating message");
       }
     } catch (error) {
-      console.error("Error fetching messages", error);
-      toast.error("");
+      console.error("Error updating message", error);
+      toast.error("Error updating message");
     }
   };
+
+  const handleDeleteClick = async () => {
+    try {
+      const res = await fetch(`/api/messages/${message.id}`, {
+        method: "DELETE",
+      });
+      if (res.status === 200) {
+        toast.success("Message deleted");
+        setIsDeleted(true);
+      } else {
+        toast.error("Error deleting message");
+      }
+    } catch (error) {
+      console.error("Error deleting message", error);
+      toast.error("Error deleting message");
+    }
+  };
+
+  if (isDeleted) return null;
 
   return (
     <div
@@ -82,7 +102,10 @@ const Message = ({ message }: MessageProps) => {
       >
         {isRead ? "Mark As New" : "Mark As Read"}
       </button>
-      <button className="mt-4 bg-red-500 text-white py-1 px-3 rounded-md">
+      <button
+        onClick={handleDeleteClick}
+        className="mt-4 bg-red-500 text-white py-1 px-3 rounded-md"
+      >
         Delete
       </button>
     </div>
