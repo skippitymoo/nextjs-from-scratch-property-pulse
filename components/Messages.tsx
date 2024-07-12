@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import Message from "./Message";
 import Spinner from "./Spinner";
 import { MessageType } from "@/types/app-types";
 
@@ -37,66 +38,9 @@ const Messages = () => {
             {!messages?.length ? (
               <p>You have no messages</p>
             ) : (
-              messages.map((message) => {
-                const propertyName =
-                  typeof message.property === "object"
-                    ? message.property.name
-                    : message.property;
-                const username =
-                  typeof message.sender === "object"
-                    ? message.sender.username
-                    : message.sender;
-                return (
-                  <div
-                    key={message.id}
-                    className="relative bg-white p-4 rounded-md shadow-md border border-gray-200"
-                  >
-                    <h2 className="text-xl mb-4">
-                      <span className="font-bold">Property Inquiry:</span>{" "}
-                      {propertyName}
-                    </h2>
-                    <p className="text-gray-700">{message.msgBody}</p>
-                    <ul className="mt-4">
-                      <li>
-                        <strong>Name:</strong> {username}
-                      </li>
-
-                      <li>
-                        <strong>Reply Email:</strong>{" "}
-                        <a
-                          href={`mailto:${message.email}`}
-                          className="text-blue-500"
-                        >
-                          {message.email}
-                        </a>
-                      </li>
-                      <li>
-                        <strong>Reply Phone:</strong>{" "}
-                        <a
-                          href={`tel:${message.phone}`}
-                          className="text-blue-500"
-                        >
-                          {message.phone}
-                        </a>
-                      </li>
-                      <li>
-                        <strong>Received:</strong>{" "}
-                        {message.createdAt
-                          ? new Date(message.createdAt).toLocaleString()
-                          : message.createdAt}
-                      </li>
-                    </ul>
-                    {!message.read && (
-                      <button className="mt-4 mr-3 bg-blue-500 text-white py-1 px-3 rounded-md">
-                        Mark As Read
-                      </button>
-                    )}
-                    <button className="mt-4 bg-red-500 text-white py-1 px-3 rounded-md">
-                      Delete
-                    </button>
-                  </div>
-                );
-              })
+              messages.map((message) => (
+                <Message key={message.id} message={message} />
+              ))
             )}
           </div>
         </div>
