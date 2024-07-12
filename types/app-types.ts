@@ -40,12 +40,13 @@ export interface SellerInfo {
 
 export interface MessageType {
   id: string;
-  sender: string;
+  sender: string | { username: string };
   recipient: string;
-  property: string;
+  property: string | Partial<PropertyType>;
   name: string;
   email: string;
   phone?: string;
-  body?: string;
+  msgBody?: string;
   read?: boolean;
+  createdAt?: string;
 }

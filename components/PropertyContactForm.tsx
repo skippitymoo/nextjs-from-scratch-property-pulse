@@ -13,7 +13,7 @@ const PropertyContactForm = ({ property }: PropertyContactFormProps) => {
   const { data: session } = useSession();
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
-  const [message, setMessage] = useState<string>("");
+  const [msgBody, setMsgBody] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
   const [wasSubmitted, setWasSubmitted] = useState(false);
 
@@ -24,7 +24,7 @@ const PropertyContactForm = ({ property }: PropertyContactFormProps) => {
       name,
       email,
       phone,
-      message,
+      msgBody,
       recipient: property.owner,
       property: property.id,
     };
@@ -54,7 +54,7 @@ const PropertyContactForm = ({ property }: PropertyContactFormProps) => {
       setName("");
       setEmail("");
       setPhone("");
-      setMessage("");
+      setMsgBody("");
     }
   };
 
@@ -134,11 +134,11 @@ const PropertyContactForm = ({ property }: PropertyContactFormProps) => {
             </label>
             <textarea
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 h-44 focus:outline-none focus:shadow-outline"
-              id="message"
+              id="msgBody"
               placeholder="Enter your message"
-              value={message}
+              value={msgBody}
               onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
-                setMessage(e.target.value)
+                setMsgBody(e.target.value)
               }
             ></textarea>
           </div>

@@ -37,7 +37,7 @@ const MessageSchema = new Schema<IMessage>(
     phone: {
       type: String,
     },
-    body: {
+    msgBody: {
       type: String,
     },
     read: {
