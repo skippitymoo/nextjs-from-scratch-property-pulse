@@ -20,9 +20,26 @@ export const GET = async (_: Request) => {
 
     const { userId } = sessionUser;
 
-    const messageDocuments = await Message.find({ recipient: userId })
+    const readMessageDocuments = await Message.find({
+      recipient: userId,
+      read: true,
+    })
+      .sort({ createdAt: -1 }) // sort read messages in asc order
       .populate("sender", "username")
       .populate("property", "name");
+
+    const unreadMessageDocuments = await Message.find({
+      recipient: userId,
+      read: false,
+    })
+      .sort({ createdAt: -1 }) // sort read messages in asc order
+      .populate("sender", "username")
+      .populate("property", "name");
+
+    const messageDocuments = [
+      ...unreadMessageDocuments,
+      ...readMessageDocuments,
+    ];
 
     const messages = messageDocuments.map((messageDocument) => {
       const msg = messageDocument.toObject();
