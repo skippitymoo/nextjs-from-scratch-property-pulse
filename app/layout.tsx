@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { ToastContainer } from "react-toastify";
 import AuthProvider from "@/components/AuthProvider";
+import { GlobalContextProvider } from "@/context/GlobalContext";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 
@@ -15,16 +16,18 @@ export const metadata: Metadata = {
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <AuthProvider>
-      <html lang="en">
-        <body>
-          <NavBar />
-          <main>{children}</main>
-          <Footer />
-          <ToastContainer />
-        </body>
-      </html>
-    </AuthProvider>
+    <GlobalContextProvider>
+      <AuthProvider>
+        <html lang="en">
+          <body>
+            <NavBar />
+            <main>{children}</main>
+            <Footer />
+            <ToastContainer />
+          </body>
+        </html>
+      </AuthProvider>
+    </GlobalContextProvider>
   );
 };
 

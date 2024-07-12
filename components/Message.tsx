@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { MessageType } from "@/types/app-types";
+import { useGlobalContext } from "@/context/GlobalContext";
 
 interface MessageProps {
   message: MessageType;
@@ -10,6 +11,8 @@ interface MessageProps {
 const Message = ({ message }: MessageProps) => {
   const [isRead, setIsRead] = useState(message.read || false);
   const [isDeleted, setIsDeleted] = useState(false);
+
+  const { setMsgCount } = useGlobalContext();
 
   const propertyName =
     typeof message.property === "object"
@@ -28,6 +31,7 @@ const Message = ({ message }: MessageProps) => {
         setIsRead(read);
         const notificationText = read ? "Marked as read" : "Marked as new";
         toast.success(notificationText);
+        setMsgCount((prev) => (read ? prev - 1 : prev + 1));
       } else {
         toast.error("Error updating message");
       }
@@ -43,8 +47,9 @@ const Message = ({ message }: MessageProps) => {
         method: "DELETE",
       });
       if (res.status === 200) {
-        toast.success("Message deleted");
         setIsDeleted(true);
+        if (message.read) setMsgCount((prev) => prev - 1);
+        toast.success("Message deleted");
       } else {
         toast.error("Error deleting message");
       }
