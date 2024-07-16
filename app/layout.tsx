@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 
 import "@/assets/styles/globals.css";
 import "react-toastify/dist/ReactToastify.css";
+import 'photoswipe/dist/photoswipe.css'
 
 export const metadata: Metadata = {
   title: "Propert Pulse | Find The Perfect Rental",
