@@ -30,6 +30,29 @@ const fetchProperties = async (
   return { total: 0, properties: [] };
 };
 
+const fetchPropertiesFeatured = async (): Promise<PropertyType[]> => {
+  try {
+    // Handle the case where the domain is not available yet
+    if (!apiDomain) return [];
+
+    const res = await fetch(`${apiDomain}/properties/featured`, {
+      cache: "no-store",
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch featured properties data!!!");
+    }
+
+    const resJson = await res.json();
+
+    return resJson;
+  } catch (error) {
+    console.error("------ Featured Properties fetch - ERROR ------", error);
+  }
+
+  return [];
+};
+
 const fetchProperty = async (id: string): Promise<PropertyType | null> => {
   try {
     // Handle the case where the domain is not available yet
@@ -51,4 +74,4 @@ const fetchProperty = async (id: string): Promise<PropertyType | null> => {
   return null;
 };
 
-export { fetchProperties, fetchProperty };
+export { fetchProperties, fetchProperty, fetchPropertiesFeatured };

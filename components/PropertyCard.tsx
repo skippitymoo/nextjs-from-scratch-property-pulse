@@ -14,21 +14,21 @@ interface PropertyCardProps {
   property: PropertyType;
 }
 
+export const getRateDisplay = (rates: Rates): string => {
+  if (rates.monthly) {
+    return `${formatCurrency(rates.monthly)}/mo`;
+  }
+  if (rates.weekly) {
+    return `${formatCurrency(rates.weekly)}/wk`;
+  }
+  if (rates.nightly) {
+    return `${formatCurrency(rates.nightly)}/night`;
+  }
+
+  return "";
+};
+
 const PropertyCard = ({ property }: PropertyCardProps) => {
-  const getRateDisplay = (rates: Rates): string => {
-    if (rates.monthly) {
-      return `${formatCurrency(rates.monthly)}/mo`;
-    }
-    if (rates.weekly) {
-      return `${formatCurrency(rates.weekly)}/wk`;
-    }
-    if (rates.nightly) {
-      return `${formatCurrency(rates.nightly)}/night`;
-    }
-
-    return "";
-  };
-
   return (
     <div className="rounded-xl shadow-md relative">
       <Image
