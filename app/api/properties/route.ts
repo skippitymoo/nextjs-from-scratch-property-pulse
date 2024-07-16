@@ -1,24 +1,44 @@
+import type { NextRequest } from "next/server";
 import { UploadApiResponse } from "cloudinary";
 import connectDB from "@/config/database";
 import cloudinary from "@/config/cloudinary";
-import Property from "@/models/Property";
+import Property, { type IProperty } from "@/models/Property";
 import { getSessionUser } from "@/utils/getSessionUser";
 
 // GET /api/properties
-export const GET = async (_: Request) => {
+export const GET = async (request: NextRequest) => {
   try {
     await connectDB();
 
-    const propertiesDocuments = await Property.find({});
+    const searchParams = request.nextUrl.searchParams;
+    const page = Number(searchParams.get("page") || 1);
+    const pageSize = Number(searchParams.get("pageSize") || 3);
+    const skip = (page - 1) * pageSize;
 
-    const properties = propertiesDocuments.map((propertyDocument) => {
+    const total = await Property.countDocuments({});
+    let payload: { total: number; properties: IProperty[] } = {
+      total,
+      properties: [],
+    };
+
+    if (skip >= total)
+      return new Response(JSON.stringify(payload), {
+        status: 200,
+      });
+
+    const numberOfProperties = Math.min(pageSize, total - skip);
+    const propertiesDocuments = await Property.find({})
+      .skip(skip)
+      .limit(numberOfProperties);
+
+    payload.properties = propertiesDocuments.map((propertyDocument) => {
       const property = propertyDocument.toObject();
       property.id = property._id.toString();
 
       return property;
     });
 
-    return new Response(JSON.stringify(properties), {
+    return new Response(JSON.stringify(payload), {
       status: 200,
     });
   } catch (error) {

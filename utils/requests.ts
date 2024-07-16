@@ -1,13 +1,20 @@
+import type { GetPropertiesPayload } from "@/types/api-types";
 import type { PropertyType } from "@/types/app-types";
 
 const apiDomain = process.env.NEXT_PUBLIC_DOMAIN_API || null;
 
-const fetchProperties = async (): Promise<PropertyType[]> => {
+const fetchProperties = async (
+  page: number,
+  pageSize: number
+): Promise<GetPropertiesPayload> => {
   try {
     // Handle the case where the domain is not available yet
-    if (!apiDomain) return [];
+    if (!apiDomain) return { total: 0, properties: [] };
 
-    const res = await fetch(`${apiDomain}/properties`, { cache: "no-store" });
+    const res = await fetch(
+      `${apiDomain}/properties?page=${page}&pageSize=${pageSize}`,
+      { cache: "no-store" }
+    );
 
     if (!res.ok) {
       throw new Error("Failed to fetch properties data!!!");
@@ -20,7 +27,7 @@ const fetchProperties = async (): Promise<PropertyType[]> => {
     console.error("------ Properties fetch - ERROR ------", error);
   }
 
-  return [];
+  return { total: 0, properties: [] };
 };
 
 const fetchProperty = async (id: string): Promise<PropertyType | null> => {
