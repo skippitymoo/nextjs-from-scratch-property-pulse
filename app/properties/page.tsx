@@ -1,7 +1,7 @@
 import Properties from "@/components/Properties";
 import PropertySearchForm from "@/components/PropertySearchForm";
 
-export const PropertiesPage = async () => {
+const PropertiesPage = () => {
   return (
     <>
       <section className="bg-blue-700 py-4">
